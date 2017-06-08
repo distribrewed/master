@@ -1,0 +1,34 @@
+<a class="btn btn-xs btn-default" onclick="get_create_session()">
+    create
+</a>
+<br />
+<b>Available sessions</b>
+<ul>
+    {% for detail in selection %}
+    {% if not detail.locked %}
+    <li><a onclick="get_session_data({{ detail.pk }})">{{ detail }}</a></li>
+    {% endif %}
+    {% empty %}
+    <li>No sessions found</li>
+    {% endfor %}
+</ul>
+<b>Archived sessions</b>
+<ul>
+    {% for detail in selection %}
+    {% if detail.locked %}
+    <li><a onclick="get_session_data({{ detail.pk }})">{{ detail }}</a></li>
+    {% endif %}
+    {% empty %}
+    <li>No sessions found</li>
+    {% endfor %}
+</ul>
+<br />
+<br />
+<br />
+<br />
+<br />
+{% if init_selection > 0 %}
+<script type="text/javascript">
+    get_session_data({{ init_selection }});
+</script>
+{% endif %}

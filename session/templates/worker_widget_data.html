@@ -1,0 +1,18 @@
+<table>
+    <tr>
+        <td align="center"><b>{{ session_detail.name }}</b></td>
+    </tr>
+    <tr>
+        <td align="center"><i>{{ worker.name }}</i></td>
+    </tr>
+    {% for last_measurement in last_measurements %}
+    <tr>
+        <td align="center">{{ last_measurement.work }}</td>
+    </tr>
+    <tr>
+        <td align="center">{{ last_measurement.remaining }}</td>
+    </tr>
+    {% empty %}
+    <tr><td align="center"><i>No work in progress</i></td></tr>
+    {% endfor %}
+</table>

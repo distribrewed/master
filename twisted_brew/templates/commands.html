@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content_heading %}
+<h2>Commands</h2>
+{% endblock %}
+{% block content %}
+        <ul>
+            {% for command in commands %}
+            <li>{{ command }}</li>
+            {% empty %}
+            <li>No commands found.</li>
+            {% endfor %}
+         </ul>
+{% endblock %}

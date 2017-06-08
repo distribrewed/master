@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+    {% load static %}
+    <script src="{% static 'js/message.js' %}"></script>
+{% endblock %}
+{% block content_heading %}
+    <h2>{{ heading }}</h2>{% load static %}
+{% endblock %}
+{% block content %}
+<div class="btn-group btn-group-justified">
+<a class="btn btn-small btn-primary" href="/message_fake/{{ messages_type }}/Warning/">
+    fake a warning
+</a>
+<a class="btn btn-small btn-primary" href="/message_fake/{{ messages_type }}/Error/">
+    fake an error
+</a>
+</div>
+{% if object_list %}
+    <a class="btn btn-small btn-danger" href="/{{ messages_type }}_clear/">
+        clear all {{ messages_type }}
+    </a>
+    <a class="btn btn-small btn-success" href="/{{ messages_type }}/">
+        refresh {{ messages_type }}
+    </a>
+    <br />
+    <table id="tb_messages_table" class="table table-hover table-condensed"">
+        <thead>
+            <th>Timestamp</th>
+            <th>Type</th>
+            <th>Message</th>
+            <th></th>
+        </thead>
+        <tbody>
+            {% for message in object_list %}
+            <tr id="message_{{ forloop.counter0 }}" class="{{ message.type.lower }}">
+            <td>
+                {{ message.timestamp|date:"G"}}:{{ message.timestamp|date:"i"}}:{{ message.timestamp|date:"s"}}
+            </td>
+            <td>{{ message.type }}</td>
+            <td>{{ message.text }}</td>
+            <td><button class="btn btn-small btn-danger" onclick="message_delete({{ message.id }}, {{forloop.counter0}});">Delete</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    {% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}"><small>[previous]</small></a>
+        {% endif %}
+        &nbsp;&nbsp;&nbsp;Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}&nbsp;&nbsp;&nbsp;
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}"><small>[next]</small></a>
+        {% endif %}
+    {% endif %}
+{% else %}
+    <p></p><b>No messages found.</b></p>
+{% endif %}
+{% endblock %}

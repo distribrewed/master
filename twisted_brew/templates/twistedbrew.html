@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    {% load static %}
+    <script src="{% static 'js/angular/angular.js' %}"></script>
+    <script src="{% static 'js/ng_messages.js' %}"></script>
+    <title></title>
+</head>
+<body ng-app="ng_messages">
+<div ng-controller="ListCtrl" ng-init="initialize('Ready for action')">
+    <h1>This is the ng_messages page</h1>
+    <ul>
+        <li></li>
+    </ul>
+    <form>
+        <button ng-click="loadItems()">Load</button>
+    </form>
+    <hr/>
+    <table ng-table class="table">
+        <tr ng-repeat="item in items">
+            <td data-title="'Name'">[[ item.timestamp ]]</td>
+            <td data-title="'Age'">[[ item.type ]]</td>
+            <td data-title="'Age'">[[ item.text ]]</td>
+        </tr>
+    </table>
+    <!--<pre>Items:[[ items | json ]]</pre>-->
+</div>
+</body>
+</html>

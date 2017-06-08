@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}Twisted Brew - Brews{% endblock %}
+
+{% block content_heading %}
+    <h2>Charts</h2>
+{% endblock %}
+{% block content %}
+{% load static %}
+{% csrf_token %}
+<script type="text/javascript">
+function LineChart(placeHolderId, chartType, totalPoints, updateInterval) {
+	// lineChart properties
+	this.placeHolderId = placeHolderId;
+	this.chartType = chartType;
+	this.totalPoints = totalPoints;
+	this.updateInterval = updateInterval;
+
+    this.initUpdateInterval = updateInterval;
+	this.setTempchartData = [];
+	this.probeTempchartData = [];
+	this.dummyData = [];
+    this.chartData = [];
+	this.setTemp = 0;
+	this.probeTemp = 0;
+	this.timeStamp = 0;
+	this.noUpdateCount = 1;
+    this.now = new Date().getTime();
+
+	switch (this.chartType) {
+		case 'mashChart':
+			this.chartTicks = [5, "second"];
+			this.worker = "{{ mash_worker }}";
+			break;
+		case 'fermChart':
+			this.chartTicks = [1, "hour"];
+			this.worker = "{{ fermentation_worker }}";
+			break;
+		default:
+			this.chartTicks = [1, "minute"];
+	}
+
+    LineChart.prototype.getTicks = function(v, axis){
+        var date = new Date(v);
+
+        switch (this.chartType) {
+		case 'mashChart':
+		    if (date.getSeconds() % 60 == 0) { // controls the space between printed ticks (so they don't overlap)
+                var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+                return hours + ":" + minutes + ":" + seconds;
+            } else {
+                return "";
+            }
+			break;
+		case 'fermChart':
+
+            var weekday = new Array(7);
+            weekday[0]=  "Sun";
+            weekday[1] = "Mon";
+            weekday[2] = "Tue";
+            weekday[3] = "Wed";
+            weekday[4] = "Thu";
+            weekday[5] = "Fri";
+            weekday[6] = "Sat";
+
+			if (date.getHours() % 6 == 0) { // controls the space between printed ticks (so they don't overlap)
+                var day = date.getDay();
+                var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                return weekday[day] + " " + hours + ":" + minutes;
+            } else {
+                return "";
+            }
+			break;
+		default:
+            var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+            var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+            return hours + ":" + minutes;
+	    }
+
+    };
+
+	this.dataset = [
+        { label: "Set Temp:" + this.setTemp + "°C", data: this.setTempchartData, lines: {fill: true,  lineWidth: 1.0 }, color: "rgba(0, 255, 0, 0.4)" },
+        { label: "Probe Temp:" + this.probeTemp + "°C", data: this.probeTempchartData, lines: {lineWidth: 2.0}, color: "rgba(255, 0, 0, 0.8)" },
+        { label: "", data: this.dummyData, lines: {lineWidth: 0.0}, color: "rgba(0, 0, 0, 0.0)" }
+    ];
+
+	this.options = {
+        xaxis: {
+            mode: "time",
+            tickSize: this.chartTicks, // controls the space between each tick (vertical grid line) shown on the xaxis,
+            tickFormatter: this.getTicks.bind(this),
+            axisLabel: "Time",
+            axisLabelUseCanvas: true,
+            axisLabelFontSizePixels: 12,
+            axisLabelFontFamily: 'Verdana, Arial',
+            axisLabelPadding: 10
+        },
+        yaxes: [
+            {
+                min: 0,
+                max: 110,
+                tickSize: 5,
+                tickFormatter: function (v, axis) {
+                    if (v % 5 == 0) {
+                        return v ;
+                    } else {
+                        return "";
+                    }
+                },
+                axisLabel: "Temp °C",
+                axisLabelUseCanvas: true,
+                axisLabelFontSizePixels: 12,
+                axisLabelFontFamily: 'Verdana, Arial',
+                axisLabelPadding: 6
+            }
+        ],
+        legend: {
+            noColumns: 0,
+            position:"nw"
+        },
+        grid: {
+            backgroundColor: { colors: ["#ffffff", "#EDF5FF"] }
+        }
+    };
+
+	// lineChart methods
+	LineChart.prototype.initData = function(){
+	    for (var i = 0; i < this.totalPoints; i++) {
+			this.chartData = [this.now += this.updateInterval, 0];
+			this.dummyData.push(this.chartData);
+		}
+	};
+
+	LineChart.prototype.backOff = function (){
+		this.updateInterval =+ this.initUpdateInterval*this.noUpdateCount;
+		if(this.noUpdateCount < 5){
+			this.noUpdateCount++;
+		}else{
+			this.noUpdateCount = 1;
+		}
+	};
+
+	LineChart.prototype.update = function (_data) {
+		var l = _data.latest_timestamp.length;
+		if (l == 0){
+			this.backOff();
+		}else{
+			this.updateInterval = this.initUpdateInterval;
+			this.noUpdateCount = 1;
+		}
+		for (i = 0; i < l; i++) {
+			this.timeStamp = _data.latest_timestamp[i];
+			this.setTemp = _data.latest_set_point[i];
+			this.probeTemp = _data.latest_probe_temp[i];
+			if (this.setTempchartData.length >= this.totalPoints) {
+				this.setTempchartData.shift();
+				this.probeTempchartData.shift();
+			}
+			this.chartData = [this.timeStamp, this.setTemp];
+			this.setTempchartData.push(this.chartData);
+			this.chartData = [this.timeStamp, this.probeTemp];
+			this.probeTempchartData.push(this.chartData);
+			this.dummyData.shift();
+		}
+
+		this.dataset[0].label = "Set Temp:" + this.setTemp + "°C";
+		this.dataset[1].label = "Probe Temp:" + this.probeTemp + "°C";
+
+		$.plot($(this.placeHolderId), this.dataset, this.options);
+		setTimeout(this.getData.bind(this), this.updateInterval);
+	};
+
+	LineChart.prototype.getData = function () {
+		$.ajaxSetup({ cache: false });
+		$.ajax({
+			url: "/charts_update/",
+			dataType: 'json',
+			type: 'POST',
+			data: {timestamp: this.timeStamp+1000, worker: this.worker, csrfmiddlewaretoken: '{{ csrf_token }}'},
+			success: this.update.bind(this),
+			error: function () {
+				this.backOff.bind(this);
+				setTimeout(this.getData.bind(this), this.updateInterval);
+			}
+		});
+	}
+
+    LineChart.prototype.drawChart = function () {
+        this.initData();
+	    $.plot($(this.placeHolderId), this.dataset, this.options);
+	    setTimeout(this.getData.bind(this), this.updateInterval);
+    }
+}
+
+
+var mashChart1 = new LineChart('#mashChart1','mashChart',100,2000);
+var fermChart1 = new LineChart('#fermChart1','fermChart',100,2000);
+
+$(document).ready(function () {
+	mashChart1.drawChart();
+    fermChart1.drawChart();
+});
+
+
+
+
+</script>
+<!-- HTML -->
+<div>Mash Temp Graph</div>
+<div id="mashChart1" style="width:1000px;height:400px;margin:0"></div>
+<div>Fermentation Temp Graph</div>
+<div id="fermChart1" style="width:1000px;height:400px;margin:0"></div>
+
+{% endblock %}

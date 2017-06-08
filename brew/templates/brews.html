@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content_heading %}
+{% load static %}
+<link href="{% static 'css/brew.css' %}" rel="stylesheet">
+<script src="{% static 'js/brew.js' %}"></script>
+<h2>Brews</h2>
+{% csrf_token %}
+{% endblock %}
+
+{% block tb_sidebar_page_sidebar %}
+<div class="brew_selection" id="brew_selection">
+
+</div>
+<div class="brew_import" id="brew_import">
+    <div class="form-group">
+        <br/><br/>
+        <a class="btn btn-xs btn-danger" href="/brew/brews_delete_all/">delete all</a>
+        <br/><br/>
+        <form action="/brew/brews_import/" method="post" enctype="multipart/form-data" role="form">
+            {% csrf_token %}
+            {% if importers %}
+            Import brews using<br/>
+            <select name="index" class="form-control">
+                {% for importer in importers %}
+                <option value="{{ importer.index }}">{{ importer.display_name }}</option>
+                {% endfor %}
+            </select><br/>
+            <input style="text-align:center" type="file" name="file" class="form-control"/><br/>
+            <br/>
+            <input type="submit" value="Import" class="form-control">
+            {% endif %}
+        </form>
+    </div>
+    <div class="brew_extra" id="brew_extra">
+
+    </div>
+</div>
+{% endblock %}
+
+{% block tb_sidebar_page_main %}
+<div class="brew_data" id="brew_data">
+
+</div>
+{% endblock %}
