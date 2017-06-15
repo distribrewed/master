@@ -1,6 +1,14 @@
 ROOT_DIR := $(shell pwd)
 IMAGE_TAG := distribrewed/master
-BUILD_FLAGS ?= ''
 
-docker-build:
-	docker build ${BUILD_FLAGS} -t ${IMAGE_TAG} .
+DOCKER_STACK_DB_CONTAINER_NAME ?= masterdev_postgres_1
+DOCKER_STACK_DB_LINK ?= --link=${DOCKER_STACK_DB_CONTAINER_NAME}:postgres
+
+DOCKER_STACK_RABBITMQ_CONTAINER_NAME ?= masterdev_rabbitmq_1
+DOCKER_STACK_RABBITMQ_LINK ?= --link=${DOCKER_STACK_RABBITMQ_CONTAINER_NAME}:rabbitmq
+
+DOCKER_STACK_TIME_DELAY := 5
+DOCKER_STACK_DIR := ${ROOT_DIR}/docker-stack/master_dev
+DOCKER_STACK_ENV_FILE ?= ${DOCKER_STACK_DIR}/.env
+
+include make/*
