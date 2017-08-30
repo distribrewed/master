@@ -1,14 +1,14 @@
-FROM resin/raspberrypi3-alpine-python:3-slim
+FROM distribrewed/core:x64
 
-ENV DJANGO_SETTINGS_MODULE=twisted_brew.settings \
-    PROJECT_DIR=/distribrewed \
-    TMP_DIR=/tmp_dir
+# For psycopg2
+RUN apk add --no-cache postgresql-dev g++
 
-COPY ./requirements.txt ${TMP_DIR}/requirements.txt
+ENV APP_DIR=/opt/project/distribrewed
+ENV PLUGIN_DIR=${APP_DIR}/master \
+    MASTER_PLUGIN_CLASS=DistribrewedMaster
 
-RUN pip install -r ${TMP_DIR}/requirements.txt && rm -r ${TMP_DIR}
+COPY requirements.txt ${TMP_DIR}/requirements.txt
+RUN pip install -r ${TMP_DIR}/requirements.txt && rm -rf ${TMP_DIR}/*
 
-COPY ./distribrewed ${PROJECT_DIR}
-
-WORKDIR ${PROJECT_DIR}
-CMD ["python","-u","manage.py","twisted_brew","./config/twisted_brew.yml"]
+COPY /distribrewed ${APP_DIR}
+WORKDIR ${APP_DIR}
