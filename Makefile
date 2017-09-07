@@ -1,5 +1,6 @@
 ROOT_DIR := $(shell pwd)
 
+DOCKER_BASE_IMAGE_TAG := distribrewed/core:x64
 DOCKER_IMAGE_TAG := distribrewed/master
 
 DOCKER_STACK_DB_CONTAINER_NAME ?= distribrewedstack_postgres_1
@@ -12,7 +13,10 @@ DOCKER_STACK_TIME_DELAY := 5
 DOCKER_STACK_DIR := ${ROOT_DIR}/distribrewed_stack
 DOCKER_STACK_ENV_FILE ?= ${DOCKER_STACK_DIR}/.env
 
-docker-build:
+docker-pull-base:
+	docker pull ${DOCKER_BASE_IMAGE_TAG}
+
+docker-build: docker-pull-base
 	docker build ${BUILD_FLAGS} -t ${DOCKER_IMAGE_TAG} .
 
 docker-stack-up:
