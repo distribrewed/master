@@ -2,4 +2,9 @@ from distribrewed_core.base.master import BaseMaster
 
 
 class DistribrewedMaster(BaseMaster):
-    DO_STUFF_HERE = ''
+    def send_telgram_message(self, message):
+        self._call_worker_method(
+            worker_id='pi_telegram',
+            method='telegram_bot_send_message',
+            args=[message]
+        )
