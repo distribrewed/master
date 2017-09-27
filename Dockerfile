@@ -13,4 +13,4 @@ RUN pip install -r ${TMP_DIR}/requirements.txt && rm -rf ${TMP_DIR}/*
 COPY /distribrewed ${APP_DIR}
 WORKDIR ${APP_DIR}
 
-CMD ["-A", "distribrewed", "worker", "-l", "info", "--concurrency", "1"]
+CMD ["-A", "distribrewed", "worker", "-B", "-l", "info", "--concurrency", "4", "-s /tmp/celerybeat-schedule"]

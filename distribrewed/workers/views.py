@@ -1,6 +1,6 @@
 from distribrewed_core.plugin import get_master_plugin
+from django.shortcuts import redirect
 from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
-from rest_framework.response import Response
 
 from workers.models import Worker
 from workers.serializers import WorkerSerializer
@@ -22,11 +22,12 @@ class WorkerSingle(RetrieveAPIView):
     serializer_class = WorkerSerializer
 
 
-class WorkerPing(GenericAPIView):
+class WorkerSinglePing(GenericAPIView):
     """
     Pings worker
     """
 
+    # noinspection PyUnusedLocal,PyShadowingBuiltins,PyMethodMayBeStatic
     def get(self, request, pk, format=None):
         get_master_plugin().ping_worker(pk)
-        return Response({})
+        return redirect('workers-single', pk=pk)
