@@ -1,4 +1,9 @@
-Django==1.11
-djangorestframework==3.6
+Django>=1.11,<1.12
+djangorestframework>=3.6,<3.7
 markdown # For browseble API
 psycopg2
+
+# Django extensions
+whitenoise
+django-admin-interface
+drfdocs

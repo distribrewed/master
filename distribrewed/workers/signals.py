@@ -1,0 +1,49 @@
+# Import signals in distribrewed.celery to make them work
+
+import logging
+
+from django.dispatch import receiver
+from django.utils import timezone
+
+from masters.signals import worker_registered, handle_pong, worker_de_registered
+from workers.models import Worker
+
+log = logging.getLogger(__name__)
+
+
+@receiver(worker_registered)
+def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_methods=None, **kwargs):
+    prom = worker_info.get('prometheus_scrape_port')
+    defaults = {
+        'type': worker_info.get('type'),
+        'ip_address': worker_info.get('ip'),
+        'prometheus_scrape_port': int(prom) if prom else None,
+        'last_registered': timezone.now(),
+        'last_answered_ping': None,
+        'is_answering_ping': False
+    }
+    try:
+        worker = Worker.objects.get(id=worker_id)
+        log.info('Updating worker \'{}\' in database'.format(worker_id))
+        Worker.objects.filter(id=worker.id).update(
+            **defaults
+        )
+    except Worker.DoesNotExist:
+        log.info('Creating worker \'{}\' in database'.format(worker_id))
+        Worker.objects.create(
+            id=worker_id,
+            **defaults
+        )
+
+
+@receiver(worker_de_registered)
+def delete_worker(sender, worker_id=None, worker_info=None, **kwargs):
+    Worker.objects.filter(id=worker_id).delete()
+
+
+@receiver(handle_pong)
+def handle_pong(sender, worker_id=None, **kwargs):
+    Worker.objects.filter(id=worker_id).update(
+        last_answered_ping=timezone.now(),
+        is_answering_ping=True
+    )

@@ -1,0 +1,6 @@
+FROM distribrewed/master:queue-x64
+
+COPY ./api-entrypoint.sh /api-entrypoint.sh
+
+ENTRYPOINT ["/api-entrypoint.sh"]
+CMD ["runserver", "0.0.0.0:8000"]

@@ -24,7 +24,7 @@ docker-stack-up:
 	cd ${DOCKER_STACK_DIR} ;\
 	docker-compose up -d
 	cd ${ROOT_DIR}
-	@$(MAKE) docker-stack-migrate
+	@$(MAKE) docker-stack-dev-createsuperuser
 
 docker-stack-down:
 	test ${DOCKER_STACK_DIR} != ""
@@ -35,9 +35,17 @@ docker-stack-migrate:
 	@sleep ${DOCKER_STACK_TIME_DELAY}
 	@$(MAKE) django-manage ARG=migrate
 
+docker-stack-dev-createsuperuser: docker-stack-migrate
+	@$(MAKE) django-manage ARG="createsuperuser --username admin --email admin@admin.admin"
+
+docker-pull-workers:
+	docker pull distribrewed/workers:x64
+
+docker-run-worker: docker-pull-workers
+	docker run -it $(DOCKER_STACK_RABBITMQ_LINK) -e WORKER_PLUGIN_CLASS=BaseWorker distribrewed/workers:x64
 
 django-manage: docker-build
-	docker run -it \
+	@docker run -it \
 		--rm \
 		${DOCKER_STACK_DB_LINK} \
 		--env-file=${DOCKER_STACK_ENV_FILE} \

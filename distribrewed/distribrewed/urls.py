@@ -6,5 +6,7 @@ from distribrewed.views import TestView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^(?P<id>.*)$', TestView.as_view(), name='task-run'),
+    url(r'^docs/', include('rest_framework_docs.urls')),
+    url(r'^workers/', include('workers.urls')),
+    url(r'^test/', TestView.as_view()),
 ]
