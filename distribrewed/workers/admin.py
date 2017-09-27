@@ -1,6 +1,15 @@
 from django.contrib import admin
 
-from workers.models import Worker
+from workers.models import Worker, WorkerMethod
+
+
+class WorkerMethodInline(admin.TabularInline):
+    model = WorkerMethod
+    readonly_fields = (
+        'name',
+        'parameters'
+    )
+    can_delete = False
 
 
 @admin.register(Worker)
@@ -20,3 +29,6 @@ class WorkerAdmin(admin.ModelAdmin):
         'last_answered_ping',
         'is_answering_ping',
     )
+    inlines = [
+        WorkerMethodInline,
+    ]

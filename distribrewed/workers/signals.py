@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 from masters.signals import worker_registered, handle_pong, worker_de_registered
-from workers.models import Worker
+from workers.models import Worker, WorkerMethod
 
 log = logging.getLogger(__name__)
 
@@ -30,9 +30,17 @@ def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_met
         )
     except Worker.DoesNotExist:
         log.info('Creating worker \'{}\' in database'.format(worker_id))
-        Worker.objects.create(
+        worker = Worker.objects.create(
             id=worker_id,
             **defaults
+        )
+    for method_name, parameters in worker_methods.items():
+        method, _ = WorkerMethod.objects.get_or_create(
+            worker=worker,
+            name=method_name,
+            defaults={
+                'parameters': parameters
+            }
         )
 
 

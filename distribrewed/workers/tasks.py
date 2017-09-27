@@ -15,7 +15,9 @@ def check_worker_ping():
     log.info("Checking worker ping")
     m = get_master_plugin()
     for worker in Worker.objects.all():
-        if timezone.now() - worker.last_answered_ping > timezone.timedelta(seconds=55):
+        if worker.last_answered_ping is None:
+            Worker.objects.filter(id=worker.id).update(is_answering_ping=False)
+        elif timezone.now() - worker.last_answered_ping > timezone.timedelta(seconds=55):
             log.info("Worker \'{}\' is not answering ping".format(worker.id))
             Worker.objects.filter(id=worker.id).update(is_answering_ping=False)
         m.ping_worker(worker.id)
