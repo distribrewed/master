@@ -1,6 +1,6 @@
 from distribrewed_core.plugin import get_master_plugin
 from django.shortcuts import redirect
-from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView, RetrieveDestroyAPIView
 
 from workers.models import Worker
 from workers.serializers import WorkerSerializer
@@ -14,7 +14,7 @@ class WorkerList(ListAPIView):
     serializer_class = WorkerSerializer
 
 
-class WorkerSingle(RetrieveAPIView):
+class WorkerSingle(RetrieveDestroyAPIView):
     """
     Returns a single worker
     """
