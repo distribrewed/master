@@ -44,7 +44,7 @@ class WorkerMethodsSingle(GenericAPIView):
         args = []
         for p in method.parameters:
             args += [request.query_params.get(p)]
-        get_master_plugin()._call_worker_method(worker_id=pk, all_workers=False, method=name, args=args)
+        method.call_method(args)
         return redirect('workers-single-methods', pk=pk)
 
 
