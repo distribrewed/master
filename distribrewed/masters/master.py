@@ -1,12 +1,13 @@
-from distribrewed_core.base.master import BaseMaster
+from distribrewed_core.base.master import ScheduleMaster
 
 from masters.signals import worker_registered, handle_pong, worker_de_registered
-
-
 # noinspection SpellCheckingInspection
-class DistribrewedMaster(BaseMaster):
-    def register_worker(self, worker_id, worker_info, worker_methods, reload_queues=False):
-        super(DistribrewedMaster, self).register_worker(
+from workers.models import Worker
+
+
+class DistribrewedMaster(ScheduleMaster):
+    def _register_worker(self, worker_id, worker_info, worker_methods, reload_queues=False):
+        super(DistribrewedMaster, self)._register_worker(
             worker_id,
             worker_info,
             worker_methods,
@@ -20,8 +21,8 @@ class DistribrewedMaster(BaseMaster):
         )
         self.ping_worker(worker_id)
 
-    def de_register_worker(self, worker_id, worker_info):
-        super(DistribrewedMaster, self).de_register_worker(
+    def _de_register_worker(self, worker_id, worker_info):
+        super(DistribrewedMaster, self)._de_register_worker(
             worker_id,
             worker_info,
         )
@@ -31,16 +32,18 @@ class DistribrewedMaster(BaseMaster):
             worker_info=worker_info,
         )
 
-    def handle_pong(self, worker_id):
-        super(DistribrewedMaster, self).handle_pong(worker_id)
+    def _handle_pong(self, worker_id):
+        super(DistribrewedMaster, self)._handle_pong(worker_id)
         handle_pong.send(
             sender=self.__class__,
             worker_id=worker_id,
         )
 
     def send_telgram_message(self, message):
+        available_workers = Worker.objects.filter(type='TelegramWorker')
+        assert len(available_workers) > 0, 'No Telegram workers available'
         self._call_worker_method(
-            worker_id='pi_telegram',
-            method='telegram_bot_send_message',
+            worker_id=available_workers[0].id,
+            method='send_message',
             args=[message]
         )
