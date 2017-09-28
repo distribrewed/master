@@ -9,6 +9,7 @@ from distribrewed_core.celery import *
 
 queue.conf.imports = [
     'masters.signals',
+    'schedules.signals'
     'workers.signals',
     'workers.tasks',
 ]
