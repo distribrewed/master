@@ -2,6 +2,9 @@
 
 import logging
 
+import consul
+from django.conf import settings
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -55,3 +58,20 @@ def handle_pong(sender, worker_id=None, **kwargs):
         last_answered_ping=timezone.now(),
         is_answering_ping=True
     )
+
+
+@receiver(post_save, sender=Worker)
+def add_worker_to_consul(sender, instance=None, created=None, **kwargs):
+    if created:
+        consul.Consul(**settings.CONSUL).agent.service.register(
+            'workers',
+            service_id=instance.id,
+            address=instance.ip_address,
+            port=instance.prometheus_scrape_port,
+            tags=[instance.id]
+        )
+
+
+@receiver(post_delete, sender=Worker)
+def remove_worker_from_consul(sender, instance=None, **kwargs):
+    consul.Consul(**settings.CONSUL).agent.service.deregister(instance.id)

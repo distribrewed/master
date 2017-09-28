@@ -15,7 +15,7 @@ if [ "$1" = 'python' -a "$2" = 'manage.py' -a "$(id -u)" = '0' ]; then
 	set -- su-exec distribrewed "$@"
 fi
 
-# As argument is not related to celery,
+# As argument is not related to django,
 # then assume that user wants to run his own process,
 # for example a `bash` shell to explore this image
 exec "$@"

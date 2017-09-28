@@ -89,6 +89,11 @@ DATABASES = {
     }
 }
 
+CONSUL = {
+    'host': os.environ.get('CONSUL_SERVER_HOST', 'consul'),
+    'port': int(os.environ.get('CONSUL_SERVER_PORT', '8500')),
+}
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True

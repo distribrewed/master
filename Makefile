@@ -1,7 +1,7 @@
 ROOT_DIR := $(shell pwd)
 
 DOCKER_BASE_IMAGE_TAG := distribrewed/core:x64
-DOCKER_IMAGE_TAG := distribrewed/master
+DOCKER_IMAGE_TAG := distribrewed/master:api-x64
 
 DOCKER_STACK_DB_CONTAINER_NAME ?= distribrewedstack_postgres_1
 DOCKER_STACK_DB_LINK ?= --link=${DOCKER_STACK_DB_CONTAINER_NAME}:postgres
@@ -17,7 +17,7 @@ docker-pull-base:
 	docker pull ${DOCKER_BASE_IMAGE_TAG}
 
 docker-build: docker-pull-base
-	docker build ${BUILD_FLAGS} -t ${DOCKER_IMAGE_TAG} .
+	./travis_scripts/build_x64.sh
 
 docker-stack-up:
 	test ${DOCKER_STACK_DIR} != ""

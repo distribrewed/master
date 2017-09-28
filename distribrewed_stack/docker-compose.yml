@@ -15,3 +15,17 @@ rabbitmq:
   ports:
     - "5672:5672"
     - "8100:15672"
+prometheus:
+  image: distribrewed/prometheus:x64
+  links:
+    - consul
+  ports:
+    - "9090:9090"
+  restart: always
+consul:
+  image: consul
+  environment:
+    CONSUL_LOCAL_CONFIG: '{"datacenter": "distribrewed"}'
+  ports:
+    - "8500:8500"
+  restart: always

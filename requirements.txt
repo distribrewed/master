@@ -7,3 +7,6 @@ psycopg2
 whitenoise
 django-admin-interface
 drfdocs
+
+# Consul
+python-consul
