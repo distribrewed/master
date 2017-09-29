@@ -1,7 +1,17 @@
-from django.contrib import admin, messages
+from django.contrib import admin
 
 # Register your models here.
 from schedules.models import TemperatureSchedule, TemperatureTime
+
+
+class ScheduleAdmin(admin.ModelAdmin):
+    readonly_fields = (
+        'is_valid',
+        'validation_message',
+        'is_paused',
+        'has_started',
+        'start_time',
+    )
 
 
 class TemperatureTimeInline(admin.TabularInline):
@@ -9,7 +19,7 @@ class TemperatureTimeInline(admin.TabularInline):
 
 
 @admin.register(TemperatureSchedule)
-class TemperatureScheduleAdmin(admin.ModelAdmin):
+class TemperatureScheduleAdmin(ScheduleAdmin):
     list_display = (
         'name',
     )
@@ -17,14 +27,3 @@ class TemperatureScheduleAdmin(admin.ModelAdmin):
     inlines = [
         TemperatureTimeInline,
     ]
-
-    def save_model(self, request, obj, form, change):
-        super(TemperatureScheduleAdmin, self).save_model(request, obj, form, change)
-        obj = TemperatureSchedule.objects.get(pk=obj.pk)
-        t1 = None
-        for temp_time in obj.temperaturetime_set.all():
-            t2 = temp_time.timestamp
-            if t1 is not None:
-                if t1 > t2:
-                    messages.add_message(request, messages.ERROR, 'Timestamps not in correct order')
-            t1 = t2

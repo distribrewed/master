@@ -19,11 +19,13 @@ def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_met
     prom = worker_info.get('prometheus_scrape_port')
     defaults = {
         'type': worker_info.get('type'),
+        'inheritance_chain': worker_info.get('inheritance_chain'),
         'ip_address': worker_info.get('ip'),
         'prometheus_scrape_port': int(prom) if prom else None,
         'last_registered': timezone.now(),
         'last_answered_ping': None,
-        'is_answering_ping': False
+        'is_answering_ping': False,
+        'info': worker_info.get('info')
     }
     try:
         worker = Worker.objects.get(id=worker_id)

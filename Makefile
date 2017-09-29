@@ -42,7 +42,7 @@ docker-pull-workers:
 	docker pull distribrewed/workers:x64
 
 docker-run-worker: docker-pull-workers
-	docker run -it $(DOCKER_STACK_RABBITMQ_LINK) -e WORKER_PLUGIN_CLASS=BaseWorker distribrewed/workers:x64
+	docker run -it $(DOCKER_STACK_RABBITMQ_LINK) -e WORKER_PLUGIN_CLASS=TemperatureWorker distribrewed/workers:x64
 
 django-manage: docker-build
 	@docker run -it \
