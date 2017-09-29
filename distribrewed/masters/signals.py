@@ -6,3 +6,5 @@ worker_registered = Signal(providing_args=['worker_id', 'worker_info', 'worker_m
 worker_de_registered = Signal(providing_args=['worker_id', 'worker_info'])
 
 handle_pong = Signal(providing_args=['worker_id'])
+
+schedule_finished = Signal(providing_args=['worker_id', 'schedule_id'])

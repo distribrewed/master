@@ -33,6 +33,11 @@ consul:
   restart: always
 grafana:
   image: grafana/grafana
+  links:
+    - prometheus
   ports:
     - "3000:3000"
   restart: always
+#  environment:
+#    GF_AUTH_DISABLE_LOGIN_FORM: "true"
+#    GF_AUTH_ANONYMOUS_ENABLED: "true"

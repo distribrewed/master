@@ -1,9 +1,13 @@
 from django.db import models
+from django.utils import timezone
 
 from workers.models import Worker
 
 
 class Schedule(models.Model):
+    class Meta:
+        abstract = True
+
     name = models.CharField(max_length=30)
 
     valid_worker_types = ('ScheduleWorker',)
@@ -13,17 +17,36 @@ class Schedule(models.Model):
     validation_message = models.CharField(max_length=100)
 
     is_paused = models.BooleanField(default=False)
+
     has_started = models.BooleanField(default=False)
     start_time = models.DateTimeField(blank=True, null=True)
 
-    class Meta:
-        abstract = True
+    is_finished = models.BooleanField(default=False)
+    finish_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name
 
     def validate(self):
         pass  # TODO: Validate worker type
+
+    def _data_to_worker_representation(self):
+        raise NotImplemented('Implement how to structure data for worker')
+
+    def start_schedule(self):
+        self.worker.call_method_by_name('start_worker', args=[self.to_worker_representation])
+        self.has_started = True
+        self.start_time = timezone.now()
+        self.save()
+
+    def stop_schedule(self):
+        self.worker.call_method_by_name('stop_worker')
+
+    def pause_worker(self):
+        self.worker.call_method_by_name('pause_worker')
+
+    def resume_worker(self):
+        self.worker.call_method_by_name('resume_worker')
 
 
 class TemperatureSchedule(Schedule):

@@ -18,6 +18,12 @@ class Worker(models.Model):
     def methods(self):
         return self.workermethod_set.all()
 
+    def get_method_by_name(self, name):
+        return self.methods.get(name=name)
+
+    def call_method_by_name(self, name, args=[]):
+        self.get_method_by_name(name).call_method(args=args)
+
     def __str__(self):
         return '{} {} [{}]'.format(self.type, self.id, self.ip_address)
 
