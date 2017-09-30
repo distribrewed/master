@@ -34,19 +34,24 @@ class Schedule(models.Model):
         raise NotImplemented('Implement how to structure data for worker')
 
     def start_schedule(self):
-        self.worker.call_method_by_name('start_worker', args=[self.to_worker_representation])
-        self.has_started = True
-        self.start_time = timezone.now()
-        self.save()
+        if self.worker:
+            self.worker.call_method_by_name('start_worker', args=[self.pk, self.to_worker_representation])
+            Schedule.objects.filter(pk=self.pk).update(
+                has_started=True,
+                start_time=timezone.now()
+            )
 
     def stop_schedule(self):
-        self.worker.call_method_by_name('stop_worker')
+        if self.worker:
+            self.worker.call_method_by_name('stop_worker')
 
     def pause_worker(self):
-        self.worker.call_method_by_name('pause_worker')
+        if self.worker:
+            self.worker.call_method_by_name('pause_worker')
 
     def resume_worker(self):
-        self.worker.call_method_by_name('resume_worker')
+        if self.worker:
+            self.worker.call_method_by_name('resume_worker')
 
 
 class TemperatureSchedule(Schedule):

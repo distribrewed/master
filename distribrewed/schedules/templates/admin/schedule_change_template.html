@@ -1,0 +1,21 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    {% if original %}
+        <fieldset class="module">
+            <h2>Actions</h2>
+            <div class='submit-row'>
+                <p class="deletelink-box"><a href="{% url 'admin:schedule_func' original.pk 'start' %}" class="deletelink">Start</a></p>
+                <p class="deletelink-box"><a href="{% url 'admin:schedule_func' original.pk 'stop' %}" class="deletelink">Stop</a></p>
+                <p class="deletelink-box"><a href="{% url 'admin:schedule_func' original.pk 'resume' %}" class="deletelink">Resume</a></p>
+                <p class="deletelink-box"><a href="{% url 'admin:schedule_func' original.pk 'pause' %}" class="deletelink">Pause</a></p>
+            </div>
+        </fieldset>
+
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}
+
