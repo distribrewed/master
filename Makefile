@@ -24,7 +24,7 @@ docker-stack-up:
 	cd ${DOCKER_STACK_DIR} ;\
 	docker-compose up -d
 	cd ${ROOT_DIR}
-	@$(MAKE) docker-stack-dev-createsuperuser
+	@$(MAKE) docker-stack-migrate
 
 docker-stack-down:
 	test ${DOCKER_STACK_DIR} != ""
@@ -34,9 +34,6 @@ docker-stack-down:
 docker-stack-migrate:
 	@sleep ${DOCKER_STACK_TIME_DELAY}
 	@$(MAKE) django-manage ARG=migrate
-
-docker-stack-dev-createsuperuser: docker-stack-migrate
-	@$(MAKE) django-manage ARG="createsuperuser --username admin --email admin@admin.admin"
 
 docker-pull-workers:
 	docker pull distribrewed/workers:x64
