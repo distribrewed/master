@@ -8,6 +8,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "distribrewed.settings")
 from distribrewed_core.celery import *
 
 queue.conf.imports = [
+    'grafana.signals',
     'masters.signals',
     'schedules.signals',
     'workers.signals',

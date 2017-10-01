@@ -36,6 +36,7 @@ USER_APPS = [
     'masters',
     'workers',
     'schedules',
+    'grafana',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + ADMIN_APPS + THIRD_PARTY_APPS + USER_APPS

@@ -33,8 +33,7 @@ consul:
   restart: always
 grafana:
   image: grafana/grafana
-  links:
-    - prometheus
+  net: host
   ports:
     - "3000:3000"
   restart: always
