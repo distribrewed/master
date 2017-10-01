@@ -25,7 +25,7 @@ class Worker(models.Model):
         self.get_method_by_name(name).call_method(args=args)
 
     def __str__(self):
-        return '{} {} [{}]'.format(self.type, self.id, self.ip_address)
+        return '{} [{}] {}'.format(self.id, self.ip_address, self.type)
 
 
 class WorkerMethod(models.Model):

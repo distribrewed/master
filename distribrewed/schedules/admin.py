@@ -17,14 +17,21 @@ class ScheduleAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
         'finish_time'
     )
     readonly_fields = (
+        'uuid',
+        'is_valid',
+        'validation_message',
         'has_started',
         'start_time',
         'is_paused',
-        'is_valid',
-        'validation_message',
         'is_finished',
-        'finish_time'
+        'finish_time',
+        'was_stopped'
     )
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.has_started and not obj.is_finished and obj.worker is not None:
+            return ('worker',) + self.readonly_fields
+        return self.readonly_fields
 
     def render_change_form(self, request, context, *args, **kwargs):
         # TODO: Only show workers
@@ -40,11 +47,14 @@ class ScheduleAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
     def stop(self, model):
         model.stop_schedule()
 
+    def restart(self, model):
+        model.restart_schedule()
+
     def pause(self, model):
         model.pause_worker()
 
     def resume(self, model):
-        model.pause_worker()
+        model.resume_worker()
 
 
 class TemperatureTimeInline(admin.TabularInline):

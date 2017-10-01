@@ -7,10 +7,36 @@
         <fieldset class="module">
             <h2>Actions</h2>
             <div class='submit-row'>
-                <p class="deletelink-box"><a href="{% url 'admin:schedule_func' original.pk 'start' %}" class="deletelink">Start</a></p>
-                <p class="deletelink-box"><a href="{% url 'admin:schedule_func' original.pk 'stop' %}" class="deletelink">Stop</a></p>
-                <p class="deletelink-box"><a href="{% url 'admin:schedule_func' original.pk 'resume' %}" class="deletelink">Resume</a></p>
-                <p class="deletelink-box"><a href="{% url 'admin:schedule_func' original.pk 'pause' %}" class="deletelink">Pause</a></p>
+                {% if original.is_valid == 1 and original.worker != None %}
+                    {% if original.is_finished == 0 %}
+                        {% if original.has_started == 0 %}
+                            <p class="deletelink-box">
+                                <a href="{% url 'admin:schedule_func' original.pk 'start' %}"
+                                   class="deletelink">Start</a>
+                            </p>
+                        {% else %}
+                            {% if original.is_paused == 1 %}
+                                <p class="deletelink-box">
+                                    <a href="{% url 'admin:schedule_func' original.pk 'resume' %}"
+                                       class="deletelink">Resume</a>
+                                </p>
+                            {% else %}
+                                <p class="deletelink-box">
+                                    <a href="{% url 'admin:schedule_func' original.pk 'pause' %}"
+                                       class="deletelink">Pause</a>
+                                </p>
+                            {% endif %}
+                            <p class="deletelink-box">
+                                <a href="{% url 'admin:schedule_func' original.pk 'stop' %}" class="deletelink">Stop</a>
+                            </p>
+                        {% endif %}
+                    {% else %}
+                        <p class="deletelink-box">
+                            <a href="{% url 'admin:schedule_func' original.pk 'restart' %}"
+                               class="deletelink">Restart</a>
+                        </p>
+                    {% endif %}
+                {% endif %}
             </div>
         </fieldset>
 
