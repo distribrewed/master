@@ -56,6 +56,9 @@ class ScheduleAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
     def resume(self, model):
         model.resume_worker()
 
+    def reset_schedule(self, model):
+        model.reset_schedule()
+
 
 class TemperatureTimeInline(admin.TabularInline):
     model = TemperatureTime

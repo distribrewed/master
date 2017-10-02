@@ -70,6 +70,17 @@ class Schedule(models.Model):
         if self.worker:
             self.worker.call_method_by_name('resume_worker')
 
+    def reset_schedule(self):
+        self.__class__.objects.filter(pk=self.pk).update(
+            has_started=False,
+            start_time=None,
+            was_stopped=False,
+            is_finished=False,
+            finish_time=None,
+            is_paused=False,
+        )
+        self.validate()
+
 
 class TemperatureSchedule(Schedule):
     valid_worker_types = ('TemperatureWorker',)

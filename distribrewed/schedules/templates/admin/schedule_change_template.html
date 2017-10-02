@@ -7,7 +7,7 @@
         <fieldset class="module">
             <h2>Actions</h2>
             <div class='submit-row'>
-                {% if original.is_valid == 1 and original.worker != None %}
+                {% if original.is_valid == 1 and original.worker != None and original.worker.is_registered %}
                     {% if original.is_finished == 0 %}
                         {% if original.has_started == 0 %}
                             <p class="deletelink-box">
@@ -37,6 +37,9 @@
                         </p>
                     {% endif %}
                 {% endif %}
+                <form action="{% url 'admin:schedule_func' original.pk 'reset_schedule' %}">
+                    <input value="Reset Schedule" class="default" type="submit">
+                </form>
             </div>
         </fieldset>
 
