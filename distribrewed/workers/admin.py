@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from utils.admin import CustomChangeFormFunctionMixin
 from workers.models import Worker, WorkerMethod
 
 
@@ -13,11 +14,13 @@ class WorkerMethodInline(admin.TabularInline):
 
 
 @admin.register(Worker)
-class WorkerAdmin(admin.ModelAdmin):
+class WorkerAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
+    change_form_template = "admin/worker_change_template.html"
     list_display = (
         'id',
         'type',
         'ip_address',
+        'is_registered',
         'is_answering_ping'
     )
     readonly_fields = (
@@ -27,6 +30,7 @@ class WorkerAdmin(admin.ModelAdmin):
         'ip_address',
         'prometheus_scrape_port',
         'last_registered',
+        'is_registered',
         'last_answered_ping',
         'is_answering_ping',
         'info'
@@ -34,3 +38,10 @@ class WorkerAdmin(admin.ModelAdmin):
     inlines = [
         WorkerMethodInline,
     ]
+
+    # Custom functions
+
+    function_lookup_name = 'worker_func'
+
+    def re_register_worker(self, worker):
+        worker.call_method_by_name('register')

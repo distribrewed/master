@@ -1,0 +1,19 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    {% if original %}
+        <fieldset class="module">
+            <h2>Actions</h2>
+            <div class='submit-row'>
+                <p class="deletelink-box">
+                    <a href="{% url 'admin:worker_func' original.pk 're_register_worker' %}" class="deletelink">Re-Register</a>
+                </p>
+            </div>
+        </fieldset>
+
+    {% endif %}
+    {{ block.super }}
+{% endblock %}
+

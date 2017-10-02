@@ -10,6 +10,7 @@ class Worker(models.Model):
     ip_address = models.GenericIPAddressField(protocol='IPv4', null=True)
     prometheus_scrape_port = models.IntegerField(null=True)
     last_registered = models.DateTimeField()
+    is_registered = models.BooleanField(default=False)
     last_answered_ping = models.DateTimeField(null=True)
     is_answering_ping = models.BooleanField(default=False)
     info = HStoreField()

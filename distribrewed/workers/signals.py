@@ -23,6 +23,7 @@ def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_met
         'ip_address': worker_info.get('ip'),
         'prometheus_scrape_port': int(prom) if prom else None,
         'last_registered': timezone.now(),
+        'is_registered': True,
         'last_answered_ping': None,
         'is_answering_ping': False,
         'info': worker_info.get('info')
@@ -47,11 +48,19 @@ def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_met
                 'parameters': parameters
             }
         )
+    consul_add(worker)
 
 
 @receiver(worker_de_registered)
-def delete_worker(sender, worker_id=None, worker_info=None, **kwargs):
-    Worker.objects.filter(id=worker_id).delete()
+def mark_worker_as_de_registered(sender, worker_id=None, worker_info=None, **kwargs):
+    Worker.objects.filter(id=worker_id).update(
+        is_registered=False
+    )
+
+    # Remove from consul
+    w = Worker.objects.filter(id=worker_id)
+    if len(w) == 1:
+        consul_remove(w[0])
 
 
 @receiver(handle_pong)
@@ -65,15 +74,23 @@ def handle_pong(sender, worker_id=None, **kwargs):
 @receiver(post_save, sender=Worker)
 def add_worker_to_consul(sender, instance=None, created=None, **kwargs):
     if created:
-        consul.Consul(**settings.CONSUL).agent.service.register(
-            'workers',
-            service_id=instance.id,
-            address=instance.ip_address,
-            port=instance.prometheus_scrape_port,
-            tags=[instance.id]
-        )
+        consul_add(instance)
 
 
 @receiver(post_delete, sender=Worker)
 def remove_worker_from_consul(sender, instance=None, **kwargs):
-    consul.Consul(**settings.CONSUL).agent.service.deregister(instance.id)
+    consul_remove(instance)
+
+
+def consul_add(worker):
+    consul.Consul(**settings.CONSUL).agent.service.register(
+        'workers',
+        service_id=worker.id,
+        address=worker.ip_address,
+        port=worker.prometheus_scrape_port,
+        tags=[worker.id]
+    )
+
+
+def consul_remove(worker):
+    consul.Consul(**settings.CONSUL).agent.service.deregister(worker.id)
