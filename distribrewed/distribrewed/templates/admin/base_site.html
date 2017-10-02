@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load static from staticfiles %}
+{% block nav-global %}
+    &nbsp;
+    <a target="_blank" href="http://localhost:3000"><img height="45" width="45" src="{% static "grafana.png" %}" alt="Open grafana"/></a>
+    &nbsp;
+    <a target="_blank" href="http://localhost:9090"><img height="45" width="45" src="{% static "prometheus.png" %}" alt="Open prometheus"/></a>
+    &nbsp;
+    <a target="_blank" href="http://localhost:8100"><img height="45" width="45" src="{% static "rabbitmq.png" %}" alt="Open rabbitmq"/></a>
+    &nbsp;
+    <a target="_blank" href="http://localhost:8500"><img height="45" width="45" src="{% static "consul.png" %}" alt="Open consul"/></a>
+{% endblock %}
+

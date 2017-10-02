@@ -1,6 +1,6 @@
 # noinspection PyShadowingBuiltins
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from rest_framework import serializers
 from rest_framework.generics import GenericAPIView
