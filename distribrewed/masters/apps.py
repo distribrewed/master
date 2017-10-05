@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from distribrewed import settings
+
 
 class MasterConfig(AppConfig):
     name = 'masters'
@@ -15,6 +17,6 @@ class MasterConfig(AppConfig):
         try:
             from django.contrib.auth.models import User
             if len(User.objects.all()) == 0:
-                User.objects.create_superuser('admin', '', 'admin')
+                User.objects.create_superuser(settings.DISTRIBREWED_USER, '', settings.DISTRIBREWED_PASS)
         except Exception:
             pass

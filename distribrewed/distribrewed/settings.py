@@ -10,6 +10,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+DISTRIBREWED_USER = os.environ.get('DISTRIBREWED_USER', 'admin')
+DISTRIBREWED_PASS = os.environ.get('DISTRIBREWED_PASS', 'admin')
+
 # Application definition
 DJANGO_APPS = [
     'django.contrib.auth',

@@ -9,6 +9,7 @@ from distribrewed_core.celery import *
 
 queue.conf.imports = [
     'grafana.signals',
+    'grafana.tasks',
     'masters.signals',
     'brew.signals',
     'workers.signals',

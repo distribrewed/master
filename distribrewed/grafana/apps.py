@@ -7,3 +7,5 @@ class GrafanaConfig(AppConfig):
     def ready(self):
         # noinspection PyUnresolvedReferences
         import grafana.signals
+        # noinspection PyUnresolvedReferences
+        import grafana.tasks

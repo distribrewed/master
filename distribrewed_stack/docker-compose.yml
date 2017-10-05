@@ -29,7 +29,8 @@ consul:
     - "8500:8500"
 grafana:
   image: grafana/grafana
-  net: host
+  links:
+    - prometheus
   ports:
     - "3000:3000"
 #  environment:
