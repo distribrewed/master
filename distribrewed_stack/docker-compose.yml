@@ -6,7 +6,6 @@ postgres:
     POSTGRES_PASSWORD: ${DB_PASS}
   ports:
     - "5432:5432"
-  restart: always
 rabbitmq:
   image: rabbitmq:3-management-alpine
   environment:
@@ -16,27 +15,23 @@ rabbitmq:
   ports:
     - "5672:5672"
     - "8100:15672"
-  restart: always
 prometheus:
   image: distribrewed/prometheus:x64
   links:
     - consul
   ports:
     - "9090:9090"
-  restart: always
 consul:
   image: consul
   environment:
     CONSUL_LOCAL_CONFIG: '{"datacenter": "distribrewed"}'
   ports:
     - "8500:8500"
-  restart: always
 grafana:
   image: grafana/grafana
   net: host
   ports:
     - "3000:3000"
-  restart: always
 #  environment:
 #    GF_AUTH_DISABLE_LOGIN_FORM: "true"
 #    GF_AUTH_ANONYMOUS_ENABLED: "true"
