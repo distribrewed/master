@@ -26,6 +26,7 @@ def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_met
         'is_registered': True,
         'last_answered_ping': None,
         'is_answering_ping': False,
+        'events': worker_info.get('events'),
         'info': worker_info.get('info')
     }
     try:

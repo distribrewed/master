@@ -13,6 +13,7 @@ class Worker(models.Model):
     is_registered = models.BooleanField(default=False)
     last_answered_ping = models.DateTimeField(null=True)
     is_answering_ping = models.BooleanField(default=False)
+    events = ArrayField(models.CharField(max_length=100), default=[])
     info = HStoreField()
 
     @property
