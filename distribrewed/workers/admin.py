@@ -33,6 +33,7 @@ class WorkerAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
         'is_registered',
         'last_answered_ping',
         'is_answering_ping',
+        'events',
         'info'
     )
     inlines = [
