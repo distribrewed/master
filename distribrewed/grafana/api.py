@@ -57,3 +57,8 @@ def get_organisations_by_name(name):
 
 def update_organisations_by_id(id, data):
     return _generic_put('/api/orgs/{}'.format(id), data)
+
+
+# Dashboards
+def create_dashboard(dashboard):
+    return _generic_post('/api/dashboards/db', dashboard)
