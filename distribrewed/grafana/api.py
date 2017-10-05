@@ -29,9 +29,31 @@ def _generic_post(path, data):
     return json.loads(r.content)
 
 
+def _generic_put(path, data):
+    r = requests.put(_get_full_path(path), data=json.dumps(data), auth=grafana_auth, headers=grafana_headers)
+    assert r.status_code == 200, 'API did not return code 200'
+    return json.loads(r.content)
+
+
+# Data sources
+
 def get_data_sources():
     return _generic_get('/api/datasources')
 
 
 def post_data_source(datasource):
     return _generic_post('/api/datasources', datasource)
+
+
+# Organisations
+
+def get_organisations():
+    return _generic_get('/api/org')
+
+
+def get_organisations_by_name(name):
+    return _generic_get('/api/orgs/name/{}'.format(name))
+
+
+def update_organisations_by_id(id, data):
+    return _generic_put('/api/orgs/{}'.format(id), data)
