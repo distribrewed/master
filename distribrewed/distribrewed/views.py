@@ -6,7 +6,7 @@ from rest_framework import serializers
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from schedules.models import TemperatureSchedule, TemperatureTime
+from brew.models import TemperatureSchedule, TemperatureTime
 
 log = logging.getLogger(__name__)
 

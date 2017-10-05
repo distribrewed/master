@@ -2,8 +2,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 
+from brew.models import TemperatureSchedule, Schedule, Event
 from masters.signals import schedule_finished, worker_registered
-from schedules.models import TemperatureSchedule
 
 
 @receiver(post_save, sender=TemperatureSchedule)  # TODO: Generalize for all schedules
@@ -19,9 +19,17 @@ def validate(sender, instance, **kwargs):
             'is_valid': False,
             'validation_message': e
         }
-    TemperatureSchedule.objects.filter(pk=instance.pk).update(
+
+    Schedule.objects.filter(pk=instance.pk).update(
         **update
     )
+
+    Event.objects.filter(schedule=instance).delete()
+    for e in (instance.worker.events if instance.worker else []):
+        Event.objects.create(
+            name=e,
+            schedule=instance
+        )
 
 
 @receiver(schedule_finished)  # TODO: Generalize for all schedules

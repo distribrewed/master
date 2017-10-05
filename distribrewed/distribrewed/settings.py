@@ -35,7 +35,7 @@ THIRD_PARTY_APPS = [
 USER_APPS = [
     'masters',
     'workers',
-    'schedules',
+    'brew',
     'grafana',
 ]
 

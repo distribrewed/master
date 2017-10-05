@@ -1,7 +1,60 @@
 from django.contrib import admin
 
-from schedules.models import TemperatureSchedule, TemperatureTime
+from brew.models import TemperatureSchedule, TemperatureTime, Session, Schedule, Event, EventAction
 from utils.admin import CustomChangeFormFunctionMixin
+
+
+# Session Admin
+
+class ScheduleInline(admin.TabularInline):
+    model = Schedule
+    exclude = (
+        'uuid',
+        'validation_message',
+
+    )
+    readonly_fields = (
+        'name',
+        'worker',
+        'is_valid',
+        'is_paused',
+        'has_started',
+        'start_time',
+        'is_finished',
+        'finish_time',
+        'was_stopped',
+        'event_names',
+        'event_actions',
+    )
+    show_change_link = True  # TODO: Not working because of model inheritance?
+    can_delete = True
+    max_num = 0
+
+
+@admin.register(Session)
+class SessionAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+    )
+
+    inlines = [
+        ScheduleInline,
+    ]
+
+
+# Schedule Admin
+
+class EventInline(admin.TabularInline):
+    model = Event
+    readonly_fields = (
+        'name',
+    )
+    can_delete = False
+    max_num = 0
+
+
+class EventActionInline(admin.TabularInline):
+    model = EventAction
 
 
 class ScheduleAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
@@ -26,6 +79,9 @@ class ScheduleAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
         'is_finished',
         'finish_time',
         'was_stopped'
+    )
+    exclude = (
+        'send_event',
     )
 
     def get_readonly_fields(self, request, obj=None):
@@ -59,6 +115,10 @@ class ScheduleAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
     def reset_schedule(self, model):
         model.reset_schedule()
 
+    inlines = [
+        EventInline
+    ]
+
 
 class TemperatureTimeInline(admin.TabularInline):
     model = TemperatureTime
@@ -68,4 +128,6 @@ class TemperatureTimeInline(admin.TabularInline):
 class TemperatureScheduleAdmin(ScheduleAdmin):
     inlines = [
         TemperatureTimeInline,
+        EventInline,
+        # EventActionInline, # TODO: Use generic relations for this to work
     ]
