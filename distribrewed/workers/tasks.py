@@ -20,6 +20,6 @@ def check_worker_ping():
         sleep(10)
         if worker.last_answered_ping is None:
             Worker.objects.filter(id=worker.id).update(is_answering_ping=False)
-        elif timezone.now() - worker.last_answered_ping > timezone.timedelta(seconds=30):
+        elif timezone.now() - worker.last_answered_ping > timezone.timedelta(seconds=45):
             log.info("Worker \'{}\' is not answering ping".format(worker.id))
             Worker.objects.filter(id=worker.id).update(is_answering_ping=False)
