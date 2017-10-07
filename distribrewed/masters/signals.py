@@ -8,3 +8,4 @@ worker_de_registered = Signal(providing_args=['worker_id', 'worker_info'])
 handle_pong = Signal(providing_args=['worker_id'])
 
 schedule_finished = Signal(providing_args=['worker_id', 'schedule_id'])
+receive_grafana_rows = Signal(providing_args=['worker_id', 'rows'])

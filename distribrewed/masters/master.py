@@ -1,6 +1,7 @@
 from distribrewed_core.base.master import ScheduleMaster
 
-from masters.signals import worker_registered, handle_pong, worker_de_registered, schedule_finished
+from masters.signals import worker_registered, handle_pong, worker_de_registered, schedule_finished, \
+    receive_grafana_rows
 # noinspection SpellCheckingInspection
 from workers.models import Worker
 
@@ -44,6 +45,13 @@ class DistribrewedMaster(ScheduleMaster):
             sender=self.__class__,
             worker_id=worker_id,
             schedule_id=schedule_id
+        )
+
+    def _receive_grafana_rows(self, worker_id, rows):
+        receive_grafana_rows.send(
+            sender=self.__class__,
+            worker_id=worker_id,
+            rows=rows
         )
 
     def send_telgram_message(self, message):
