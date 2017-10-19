@@ -35,5 +35,6 @@ def query_worker_for_grafana_rows(sender, instance=None, created=None, **kwargs)
 
 
 @receiver(receive_grafana_rows)
-def reveive_grafana_worker_rows(sender, worker_id=None, rows=None, **kwargs):
+def reveive_grafana_worker_rows(sender, worker_id=None, rows=[], **kwargs):
     log.info('Received \'{}\' grafana rows'.format(worker_id))
+    Worker.objects.filter(id=worker_id).update(grafana_rows=rows)

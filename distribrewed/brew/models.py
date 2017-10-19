@@ -1,12 +1,20 @@
 from django.db import models
 from django.utils import timezone
 
+from grafana.dashboards import create_dashboard
 from utils.models import create_uuid
 from workers.models import Worker, WorkerMethod
 
 
 class Session(models.Model):
     name = models.CharField(max_length=30)
+
+    def create_grafana_dashboard(self):
+        rows = []
+        for s in self.schedule_set.all():
+            if s.worker:
+                rows += s.worker.grafana_rows
+        create_dashboard(title=self.name, rows=rows)
 
     def __str__(self):
         return self.name
@@ -54,6 +62,8 @@ class Schedule(models.Model):
         raise NotImplemented('Implement how to structure data for worker')
 
     def start_schedule(self):
+        if self.session:
+            self.session.create_grafana_dashboard()
         if self.worker:
             self.worker.call_method_by_name('start_worker', args=[self.uuid, self._data_to_worker_representation()])
             self.__class__.objects.filter(pk=self.pk).update(
@@ -99,6 +109,7 @@ class Schedule(models.Model):
 
 
 # Events
+# TODO: GENERALIZE SO IT WORKS WITH INHERITANCE
 
 class Event(models.Model):
     name = models.CharField(max_length=30)
