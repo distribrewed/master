@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^api/grafana/', include('grafana.urls')),
     url(r'^api/workers/', include('workers.urls')),
     url(r'^api/master/', include('masters.urls')),
+    # url(r'^tests/', TestView.as_view()),
     url(r'^', admin.site.urls),
 ]
