@@ -1,6 +1,7 @@
 import logging
 
 from celery import signals
+from django.conf import settings
 
 from grafana.api import get_data_sources, post_data_source, get_organisations_by_name, \
     update_organisations_by_id
@@ -17,7 +18,7 @@ def set_default_grafana_datasource(*args, **kwargs):
         post_data_source({
             "name": "prometheus",
             "type": "prometheus",
-            "url": "http://prometheus:9090",  # TODO: Do not hardcode
+            "url": "http://{}:{}".format(settings.PROMETHEUS['host'], str(settings.PROMETHEUS['port'])),
             "access": "proxy",
             "basicAuth": False,
             "isDefault": True

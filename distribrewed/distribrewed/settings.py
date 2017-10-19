@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'distribrewed.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': os.environ.get('DB_HOST', 'postgres'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '5432'),
         'NAME': os.environ.get('DB_NAME', 'distribrewed'),
         'USER': os.environ.get('DB_USER', 'distribrewed'),
@@ -98,8 +98,20 @@ DATABASES = {
 }
 
 CONSUL = {
-    'host': os.environ.get('CONSUL_SERVER_HOST', 'consul'),
+    'host': os.environ.get('CONSUL_SERVER_HOST', 'localhost'),
     'port': int(os.environ.get('CONSUL_SERVER_PORT', '8500')),
+}
+
+PROMETHEUS = {
+    'host': os.environ.get('PROMETHEUS_SERVER_HOST', 'localhost'),
+    'port': int(os.environ.get('PROMETHEUS_SERVER_PORT', '9090')),
+}
+
+GRAFANA = {
+    'host': os.environ.get('GRAFANA_SERVER_HOST', 'localhost'),
+    'port': int(os.environ.get('GRAFANA_SERVER_PORT', '3000')),
+    'user': os.environ.get('GRAFANA_SERVER_USER', DISTRIBREWED_USER),
+    'pass': os.environ.get('GRAFANA_SERVER_PASS', DISTRIBREWED_PASS),
 }
 
 LANGUAGE_CODE = 'en-us'

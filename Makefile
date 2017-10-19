@@ -3,12 +3,6 @@ ROOT_DIR := $(shell pwd)
 DOCKER_BASE_IMAGE_TAG := distribrewed/core:x64
 DOCKER_IMAGE_TAG := distribrewed/master:api-x64
 
-DOCKER_STACK_DB_CONTAINER_NAME ?= distribrewedstack_postgres_1
-DOCKER_STACK_DB_LINK ?= --link=${DOCKER_STACK_DB_CONTAINER_NAME}:postgres
-
-DOCKER_STACK_RABBITMQ_CONTAINER_NAME ?= distribrewedstack_rabbitmq_1
-DOCKER_STACK_RABBITMQ_LINK ?= --link=${DOCKER_STACK_RABBITMQ_CONTAINER_NAME}:rabbitmq
-
 DOCKER_STACK_TIME_DELAY := 5
 DOCKER_STACK_DIR := ${ROOT_DIR}/distribrewed_stack
 DOCKER_STACK_ENV_FILE ?= ${DOCKER_STACK_DIR}/.env
@@ -35,16 +29,10 @@ docker-stack-migrate:
 	@sleep ${DOCKER_STACK_TIME_DELAY}
 	@$(MAKE) django-manage ARG=migrate
 
-docker-pull-workers:
-	docker pull distribrewed/workers:x64
-
-docker-run-worker: docker-pull-workers
-	docker run -it $(DOCKER_STACK_RABBITMQ_LINK) -e WORKER_PLUGIN_CLASS=TemperatureWorker distribrewed/workers:x64
-
 django-manage: docker-build
 	@docker run -it \
 		--rm \
-		${DOCKER_STACK_DB_LINK} \
+		--net=host \
 		--env-file=${DOCKER_STACK_ENV_FILE} \
 		-v ${ROOT_DIR}/distribrewed:/opt/project/distribrewed \
 		-w /opt/project/distribrewed \

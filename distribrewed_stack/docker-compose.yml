@@ -4,35 +4,22 @@ postgres:
     POSTGRES_DB: ${DB_NAME}
     POSTGRES_USER: ${DB_USER}
     POSTGRES_PASSWORD: ${DB_PASS}
-  ports:
-    - "5432:5432"
+  net: host
 rabbitmq:
   image: rabbitmq:3-management-alpine
   environment:
     RABBITMQ_DEFAULT_USER: ${AMQP_USER}
     RABBITMQ_DEFAULT_PASS: ${AMQP_PASS}
     RABBITMQ_DEFAULT_VHOST: ${AMQP_VHOST}
-  ports:
-    - "5672:5672"
-    - "8100:15672"
+  net: host
 prometheus:
   image: distribrewed/prometheus:x64
-  links:
-    - consul
-  ports:
-    - "9090:9090"
+  net: host
 consul:
   image: consul
   environment:
     CONSUL_LOCAL_CONFIG: '{"datacenter": "distribrewed"}'
-  ports:
-    - "8500:8500"
+  net: host
 grafana:
   image: grafana/grafana
-  links:
-    - prometheus
-  ports:
-    - "3000:3000"
-#  environment:
-#    GF_AUTH_DISABLE_LOGIN_FORM: "true"
-#    GF_AUTH_ANONYMOUS_ENABLED: "true"
+  net: host

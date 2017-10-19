@@ -5,8 +5,8 @@ from requests.auth import HTTPBasicAuth
 
 from distribrewed import settings
 
-grafana_url = 'grafana:3000'  # TODO: Do not hardcode
-grafana_auth = HTTPBasicAuth(settings.DISTRIBREWED_USER, settings.DISTRIBREWED_PASS)
+grafana_url = ':'.join([settings.GRAFANA['host'], str(settings.GRAFANA['port'])])
+grafana_auth = HTTPBasicAuth(settings.GRAFANA['user'], settings.GRAFANA['pass'])
 grafana_headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
