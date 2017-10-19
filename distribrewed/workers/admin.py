@@ -36,6 +36,7 @@ class WorkerAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
         'events',
         'info'
     )
+    exclude = ('grafana_rows',)
     inlines = [
         WorkerMethodInline,
     ]

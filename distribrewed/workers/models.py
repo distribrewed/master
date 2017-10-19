@@ -1,5 +1,5 @@
 from distribrewed_core.plugin import get_master_plugin
-from django.contrib.postgres.fields import ArrayField, HStoreField
+from django.contrib.postgres.fields import ArrayField, HStoreField, JSONField
 from django.db import models
 
 
@@ -15,6 +15,7 @@ class Worker(models.Model):
     is_answering_ping = models.BooleanField(default=False)
     events = ArrayField(models.CharField(max_length=100), default=[])
     info = HStoreField()
+    grafana_rows = JSONField(default=[])
 
     @property
     def methods(self):
