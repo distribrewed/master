@@ -49,7 +49,7 @@ def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_met
                 'parameters': parameters
             }
         )
-    consul_add(worker)
+    consul_add(worker.id)
 
 
 @receiver(worker_de_registered)
@@ -75,7 +75,7 @@ def handle_pong(sender, worker_id=None, **kwargs):
 @receiver(post_save, sender=Worker)
 def add_worker_to_consul(sender, instance=None, created=None, **kwargs):
     if created:
-        consul_add(instance)
+        consul_add(instance.id)
 
 
 @receiver(post_delete, sender=Worker)
@@ -83,7 +83,8 @@ def remove_worker_from_consul(sender, instance=None, **kwargs):
     consul_remove(instance)
 
 
-def consul_add(worker):
+def consul_add(worker_id):
+    worker = Worker.objects.get(id=worker_id)
     consul.Consul(**settings.CONSUL).agent.service.register(
         'workers',
         service_id=worker.id,
