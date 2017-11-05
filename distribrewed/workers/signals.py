@@ -3,6 +3,7 @@
 import logging
 
 import consul
+from consul.base import CB
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -95,4 +96,5 @@ def consul_add(worker_id):
 
 
 def consul_remove(worker):
-    consul.Consul(**settings.CONSUL).agent.service.deregister(worker.id)
+    service = consul.Consul(**settings.CONSUL).agent.service
+    service.agent.http.put(CB.bool(), '/v1/agent/service/deregister/%s' % worker.id)
