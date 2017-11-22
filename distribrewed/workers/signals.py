@@ -36,6 +36,7 @@ def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_met
         Worker.objects.filter(id=worker.id).update(
             **defaults
         )
+        worker = Worker.objects.get(id=worker_id)
     except Worker.DoesNotExist:
         log.info('Creating worker \'{}\' in database'.format(worker_id))
         worker = Worker.objects.create(
