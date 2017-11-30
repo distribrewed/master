@@ -28,6 +28,7 @@ def send_alert(sender, instance=None, created=None, **kwargs):
 
 @receiver(post_save, sender=Worker)
 def query_worker_for_grafana_rows(sender, instance=None, created=None, **kwargs):
+    log.info('Checking \'{}\' for grafana rows'.format(instance.id))
     if created:
         log.info('Quering \'{}\' for grafana rows'.format(instance.id))
         m = get_master_plugin()
