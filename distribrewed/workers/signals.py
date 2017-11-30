@@ -11,6 +11,7 @@ from django.utils import timezone
 
 from masters.signals import worker_registered, handle_pong, worker_de_registered
 from workers.models import Worker, WorkerMethod
+from grafana.signals import grafana_rows_add
 
 log = logging.getLogger(__name__)
 
@@ -52,6 +53,8 @@ def create_or_update_worker(sender, worker_id=None, worker_info=None, worker_met
             }
         )
     consul_add(worker.id)
+    grafana_rows_add(worker.id)
+
 
 
 @receiver(worker_de_registered)

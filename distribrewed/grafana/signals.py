@@ -30,9 +30,12 @@ def send_alert(sender, instance=None, created=None, **kwargs):
 def query_worker_for_grafana_rows(sender, instance=None, created=None, **kwargs):
     log.info('Checking \'{}\' for grafana rows'.format(instance.id))
     if created:
-        log.info('Quering \'{}\' for grafana rows'.format(instance.id))
-        m = get_master_plugin()
-        m.command_worker_to_send_grafana_rows(instance.id)
+        grafana_rows_add(instance.id)
+
+def grafana_rows_add(worker_id):
+    log.info('Quering \'{}\' for grafana rows'.format(worker_id))
+    m = get_master_plugin()
+    m.command_worker_to_send_grafana_rows(worker_id)
 
 
 @receiver(receive_grafana_rows)
