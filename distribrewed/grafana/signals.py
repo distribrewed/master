@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from grafana.models import Alert
 from masters.signals import receive_grafana_rows
 from workers.models import Worker
+from grafana.dashboards import create_dashboard
 
 log = logging.getLogger(__name__)
 
@@ -42,3 +43,4 @@ def grafana_rows_add(worker_id):
 def reveive_grafana_worker_rows(sender, worker_id=None, rows=[], **kwargs):
     log.info('Received \'{}\' grafana rows'.format(worker_id))
     Worker.objects.filter(id=worker_id).update(grafana_rows=rows)
+    create_dashboard(title=worker_id, rows=rows)
