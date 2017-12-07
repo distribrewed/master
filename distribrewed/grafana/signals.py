@@ -42,5 +42,6 @@ def grafana_rows_add(worker_id):
 @receiver(receive_grafana_rows)
 def reveive_grafana_worker_rows(sender, worker_id=None, rows=[], **kwargs):
     log.info('Received \'{}\' grafana rows'.format(worker_id))
+    log.info(rows)
     Worker.objects.filter(id=worker_id).update(grafana_rows=rows)
-    create_dashboard(title=worker_id, rows=rows)
+    create_dashboard(title='ThisIsIt', rows=rows)
