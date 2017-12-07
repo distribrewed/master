@@ -1,8 +1,11 @@
+import logging
+
 from grafana.api import create_dashboard as api_create_dashboard
 
+log = logging.getLogger(__name__)
 
 def create_dashboard(title='No title', refresh='5s', overwrite=True, rows=[]):
-    api_create_dashboard({
+    dashboard= {
         "overwrite": overwrite,
         "dashboard": {
             "title": title,
@@ -13,4 +16,6 @@ def create_dashboard(title='No title', refresh='5s', overwrite=True, rows=[]):
                 "to": "now"
             },
         }
-    })
+    }
+    log.info(dashboard)
+    api_create_dashboard(dashboard)
