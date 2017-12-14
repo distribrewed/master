@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from brew.models import TemperatureSchedule, TemperatureTime, Session, Schedule, Event, EventAction
+from brew.models import Recipe, RecipeSection, RecipeStep
 from utils.admin import CustomChangeFormFunctionMixin
 
 
@@ -130,4 +131,21 @@ class TemperatureScheduleAdmin(ScheduleAdmin):
         TemperatureTimeInline,
         EventInline,
         # EventActionInline, # TODO: Use generic relations for this to work
+    ]
+
+# Recipe admin
+
+class RecipeSectionInline(admin.TabularInline):
+    model = RecipeSection
+
+
+class RecipeStepInline(admin.TabularInline):
+    model = RecipeStep
+
+
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    inlines = [
+        RecipeSectionInline,
+        RecipeStepInline,
     ]
