@@ -139,7 +139,7 @@ class EventAction(models.Model):
 # Temperature schedules
 
 class TemperatureSchedule(Schedule):
-    valid_worker_types = ('TemperatureWorker',)
+    valid_worker_types = ('TemperatureWorker','DebugTemperatureWorker')
 
     def _data_to_worker_representation(self):
         return [(str(t.duration), t.temperature) for t in self.temperaturetime_set.all()]

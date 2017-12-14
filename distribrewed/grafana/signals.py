@@ -44,4 +44,4 @@ def reveive_grafana_worker_rows(sender, worker_id=None, rows=[], **kwargs):
     log.info('Received \'{}\' grafana rows'.format(worker_id))
     log.info(rows)
     Worker.objects.filter(id=worker_id).update(grafana_rows=rows)
-    create_dashboard(title='ThisIsIt2', rows=rows)
+    create_dashboard(title='Distribrewed', rows=rows)
