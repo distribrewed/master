@@ -144,8 +144,14 @@ class RecipeStepInline(admin.TabularInline):
 
 
 @admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
+    change_list_template = "admin/recipe_change_list_template.html"
+
+    # Custom functions
+
+    function_lookup_name = 'recipe_func'
+
     inlines = [
         RecipeSectionInline,
-        RecipeStepInline,
+        #RecipeStepInline,
     ]

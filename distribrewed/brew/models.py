@@ -194,7 +194,7 @@ class Recipe(models.Model):
 
 
 class RecipeSection(models.Model):
-    recipe = models.ForeignKey('brew.models.Recipe')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     index = models.IntegerField()
     name = models.CharField(max_length=COLUMN_SMALL_SIZE)
     worker_type = models.CharField(max_length=COLUMN_SMALL_SIZE)
@@ -217,7 +217,7 @@ class RecipeStep(models.Model):
         (HOURS, 'Hours'),
         (DAYS, 'Days')
     )
-    recipe_section = models.ForeignKey('brew.models.RecipeSection')
+    recipesection = models.ForeignKey(RecipeSection, on_delete=models.CASCADE)
     index = models.IntegerField()
     name = models.CharField(max_length=COLUMN_SMALL_SIZE)
     unit = models.CharField(max_length=COLUMN_SMALL_SIZE)

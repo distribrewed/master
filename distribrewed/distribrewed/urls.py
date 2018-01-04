@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^api/master/', include('masters.urls')),
     # url(r'^tests/', TestView.as_view()),
     url(r'^', admin.site.urls),
+    url(r'^brew/', include('brew.urls')),
 ]

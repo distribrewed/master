@@ -3,11 +3,7 @@ import html
 
 from importing.brew_importer import BrewImporter
 from importing.beer_smith_parser import *
-import distribrewed.core.utils.logging as log
 from brew.models import Recipe, RecipeSection, RecipeStep
-from brew.schedules.mash import MashSchedule
-from brew.schedules.boil import BoilSchedule
-from brew.schedules.fermentation import FermentationSchedule
 
 
 class BeerSmithImporter(BrewImporter):

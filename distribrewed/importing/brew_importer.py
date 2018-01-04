@@ -1,7 +1,9 @@
 #!/usr/bin python
+import logging
 import importlib
 import importing.brew_import as brew_import
-import distribrewed.core.utils.coreutils as coreutils
+
+log = logging.getLogger(__name__)
 
 class ImporterRegistration():
     def __init__(self, index, display_name):
@@ -30,7 +32,7 @@ class BrewImporter():
     @staticmethod
     def register():
         for importer_class in brew_import.BREW_IMPORTERS:
-            importer = coreutils.construct_class_instance(importer_class)
+            importer = __import__(importer_class)
             BrewImporter.registered_importers.append(importer)
 
     @staticmethod
