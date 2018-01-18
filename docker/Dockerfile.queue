@@ -3,7 +3,7 @@ FROM distribrewed/core:x64
 # For psycopg2
 RUN apk add --no-cache postgresql-dev g++
 
-ENV APP_DIR=/opt/project/distribrewed
+ENV APP_DIR=/usr/project/distribrewed
 ENV PLUGIN_DIR=${APP_DIR}/masters \
     MASTER_PLUGIN_CLASS=DistribrewedMaster
 

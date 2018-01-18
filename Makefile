@@ -34,8 +34,8 @@ django-manage: docker-build
 		--rm \
 		--net=host \
 		--env-file=${DOCKER_STACK_ENV_FILE} \
-		-v ${ROOT_DIR}/distribrewed:/opt/project/distribrewed \
-		-w /opt/project/distribrewed \
+		-v ${ROOT_DIR}/distribrewed:/usr/project/distribrewed \
+		-w /usr/project/distribrewed \
 		${DOCKER_IMAGE_TAG} \
 		python manage.py ${ARG}
 
