@@ -27,8 +27,8 @@ ADMIN_APPS = [
     'admin_interface',
     'flat_responsive',
     'colorfield',
-    'django-admin-bootstrapped.bootstrap3',
-    'django-admin-bootstrapped',
+    #'django-admin-bootstrapped.bootstrap3',
+    #'django-admin-bootstrapped',
     'django.contrib.admin',
 ]
 
