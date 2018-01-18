@@ -58,15 +58,19 @@ class BeerSmithImporter(BrewImporter):
                 name = lookup_brew_name(item).strip()
                 if name is not None:
                     # Save to database
-                    brew, sections, stepslist = _create_recipe_model(item)
+                    brew, sections, steps = _create_recipe_model(item)
                     brew.save()
                     self.counter += 1
-                    s_count = m_count = b_count = f_count = 0
-                    for section, steps in sections, stepslist:
-                        s_count += 1
-                        s = _create_recipe_section(section, brew, s_count)
-                        s.save()
-                        for step in steps:
+                    section_index = 0
+                    for i in range(len(sections)):
+                        section_index += 1
+                        sections[i].recipe = brew
+                        sections[i].index = section_index
+                        sections[i].save()
+                        step_index = 0
+                        for step in steps[i]:
+                            step_index += 1
+                            step.recipesection = sections[i]
                             step.save()
             log.debug('...done loading recipe file {0}'.format(self.recipe_file))
         except Exception as e:
@@ -108,7 +112,7 @@ def _generate_mash_section(recipe):
     # self.name = html.unescape(recipe.data["F_R_NAME"])
     mash = RecipeSection()
     mash.name = "Mash"
-    mash.type = MashType
+    mash.worker_type = MashType
     mashsteps = []
     index = 0
     for mashItem in recipe.children["F_R_MASH"].children["steps"].subdata:
@@ -127,7 +131,7 @@ def _generate_boil_section(recipe):
     # Hops
     boil = RecipeSection()
     boil.name = "Boil"
-    boil.type = BoilType
+    boil.worker_type = BoilType
     boilsteps = []
     index = 0
     for ingredient in recipe.children["Ingredients"].subdata:
@@ -155,7 +159,7 @@ def _generate_fermentation_section(recipe):
     # self.name = html.unescape(recipe.data["F_R_NAME"])
     fermentation = RecipeSection()
     fermentation.name = "Fermentation"
-    fermentation.type = FermentationType
+    fermentation.worker_type = FermentationType
     fermentationsteps = []
     # Primary step
     start_temp = convert_f2c(recipe.children["F_R_AGE"].data["F_A_PRIM_TEMP"])
@@ -182,14 +186,6 @@ def _generate_fermentation_section(recipe):
     fermentationstep = _create_fermentation_step(fermentation, 4, start_temp, days)
     fermentationsteps.append(fermentationstep)
     return fermentation, fermentationsteps
-
-def _create_recipe_section(brew, index, name, type):
-    section = RecipeSection()
-    section.index = index
-    section.recipe = brew
-    section.name = name
-    section.worker_type = type
-    return section
 
 
 def _create_mash_step(section, index, name, temp, min):

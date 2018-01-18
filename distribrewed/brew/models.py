@@ -200,7 +200,7 @@ class RecipeSection(models.Model):
     worker_type = models.CharField(max_length=COLUMN_SMALL_SIZE)
 
     def __str__(self):
-        return '{0} using {1}'.format(self.name, self.worker_type)
+        return '{0} of type {1}'.format(self.name, self.worker_type)
 
     class Meta:
         ordering = ['index']

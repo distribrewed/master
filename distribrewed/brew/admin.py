@@ -135,8 +135,9 @@ class TemperatureScheduleAdmin(ScheduleAdmin):
 
 # Recipe admin
 
-class RecipeSectionInline(admin.TabularInline):
+class RecipeSectionInline(admin.StackedInline):
     model = RecipeSection
+    show_change_link = True
 
 
 class RecipeStepInline(admin.TabularInline):
@@ -152,6 +153,17 @@ class RecipeAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
     function_lookup_name = 'recipe_func'
 
     inlines = [
-        RecipeSectionInline,
-        #RecipeStepInline,
+        RecipeSectionInline
+    ]
+
+
+@admin.register(RecipeSection)
+class RecipeSectionAdmin(CustomChangeFormFunctionMixin, admin.ModelAdmin):
+
+    # Custom functions
+
+    function_lookup_name = 'recipe_section_func'
+
+    inlines = [
+        RecipeStepInline
     ]
