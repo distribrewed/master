@@ -3,12 +3,12 @@
 
 {% block content %}
     <fieldset class="module">
-        <h2>Import from Beer Smith</h2>
-        <div class='submit-row'>
+        <h3>Import from Beer Smith</h3>
+        <div class=form-group'>
             <form action="/brew/import_recipe/" method="post" enctype="multipart/form-data" role="form">
                 {% csrf_token %}
                 <input style="text-align:center" type="file" name="file" class="form-control"/>
-                <input type="submit" value="Import" class="form-control">
+                <input type="submit" value="Import">
             </form>
         </div>
     </fieldset>
