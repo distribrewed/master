@@ -6,6 +6,7 @@ psycopg2
 # Django extensions
 whitenoise
 django-admin-interface
+django-admin-bootstrapped
 drfdocs
 
 # Consul
